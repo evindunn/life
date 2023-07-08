@@ -1,37 +1,44 @@
 import Two from "two.js";
-import {LifeModel} from "./gameState";
+import {LifeModel} from "./lifeModel";
 
-function updateView(gameModel, cellSize) {
-    const newCells = [];
-    for (let rowIdx = 0; rowIdx < gameModel.matrix.length; rowIdx++) {
-        const currentRow = gameModel.matrix[rowIdx];
-        for (let colIdx = 0; colIdx < currentRow.length; colIdx++) {
-            const currentCellVal = gameModel.valueAt(rowIdx, colIdx);
-            if (currentCellVal === 1) {
-                const newCell = createCell(cellSize, rowIdx, colIdx);
-                newCells.push(newCell);
+class LifeView {
+    constructor(model, cellSize) {
+        this.model = model;
+        this.cellSize = cellSize;
+    }
+
+    createCell(row, col) {
+        const realSize = this.cellSize - 1;
+        const cell = new Two.Rectangle(
+            col * this.cellSize + 0.5,
+            row * this.cellSize + 0.5,
+            realSize,
+            realSize,
+        );
+        const originCoords = -realSize / 2;
+        cell.origin = new Two.Vector(originCoords, originCoords);
+        cell.fill = 'white';
+        cell.linewidth = 0;
+        return cell;
+    }
+
+    update() {
+        const newCells = [];
+        for (let rowIdx = 0; rowIdx < this.model.matrix.length; rowIdx++) {
+            const currentRow = this.model.matrix[rowIdx];
+            for (let colIdx = 0; colIdx < currentRow.length; colIdx++) {
+                const currentCellVal = this.model.valueAt(rowIdx, colIdx);
+                if (currentCellVal === 1) {
+                    const newCell = this.createCell(rowIdx, colIdx);
+                    newCells.push(newCell);
+                }
             }
         }
+        const group = new Two.Group();
+        group.corner();
+        group.add(...newCells);
+        return group;
     }
-    const group = new Two.Group();
-    group.corner();
-    group.add(...newCells);
-    return group;
-}
-
-function createCell(cellSize, row, col) {
-    const realSize = cellSize - 1;
-    const cell = new Two.Rectangle(
-        col * cellSize + 0.5,
-        row * cellSize + 0.5,
-        realSize,
-        realSize,
-    );
-    const originCoords = -realSize / 2;
-    cell.origin = new Two.Vector(originCoords, originCoords);
-    cell.fill = 'white';
-    cell.linewidth = 0;
-    return cell;
 }
 
 export function create(parent_id) {
@@ -86,14 +93,15 @@ export function create(parent_id) {
     gameModelMatrix[32][27] = 1;
 
     const gameModel = new LifeModel(gameModelMatrix);
+    const gameView = new LifeView(gameModel, cellSize);
 
-    let cells = updateView(gameModel, cellSize);
+    let cells = gameView.update();
     two.add(cells);
 
     setInterval(() => {
         gameModel.update();
         cells.remove();
-        cells = updateView(gameModel, cellSize);
+        cells = gameView.update();
         two.add(cells);
         two.update();
     }, 100);
