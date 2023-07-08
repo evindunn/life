@@ -1,79 +1,13 @@
 import Two from "two.js";
 import {LifeModel} from "./lifeModel";
-
-class LifeController {
-    constructor(two, model, cellSize) {
-        this.two = two;
-        this.model = model;
-        this.cellSize = cellSize;
-        this.cells = this.makeTwoGroup();
-        this.two.add(this.cells);
-        this.two.update();
-        this.gameLoop = null;
-    }
-
-    makeCell(row, col) {
-        const realSize = this.cellSize - 1;
-        const cell = new Two.Rectangle(
-            col * this.cellSize + 0.5,
-            row * this.cellSize + 0.5,
-            realSize,
-            realSize,
-        );
-        const originCoords = -realSize / 2;
-        cell.origin = new Two.Vector(originCoords, originCoords);
-        cell.fill = 'white';
-        cell.linewidth = 0;
-        return cell;
-    }
-
-    makeTwoGroup() {
-        const newCells = [];
-        for (let rowIdx = 0; rowIdx < this.model.matrix.length; rowIdx++) {
-            const currentRow = this.model.matrix[rowIdx];
-            for (let colIdx = 0; colIdx < currentRow.length; colIdx++) {
-                const currentCellVal = this.model.valueAt(rowIdx, colIdx);
-                if (currentCellVal === 1) {
-                    const newCell = this.makeCell(rowIdx, colIdx);
-                    newCells.push(newCell);
-                }
-            }
-        }
-        const group = new Two.Group();
-        group.corner();
-        group.add(...newCells);
-        return group;
-    }
-
-    update() {
-        this.two.remove(this.cells);
-        this.cells = this.makeTwoGroup();
-        this.two.add(this.cells);
-        this.two.update();
-    }
-
-    start() {
-        if (this.gameLoop === null) {
-            this.gameLoop = setInterval(() => {
-                this.model.update();
-                this.update();
-            }, 125);
-        }
-    }
-
-    stop() {
-        if (this.gameLoop !== null) {
-            clearInterval(this.gameLoop);
-            this.gameLoop = null;
-        }
-    }
-}
+import {LifeController} from "./lifeController";
 
 export function create(parent_id) {
     const parentElem = document.getElementById(parent_id);
     const twoOpts = {
         fitted: true,
         autostart: false,
+        type: "SVGRenderer"
     };
     const two = new Two(twoOpts);
     two.appendTo(parentElem);

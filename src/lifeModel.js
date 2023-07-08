@@ -3,10 +3,12 @@ import {LifeCell} from "./cell";
 export class LifeModel {
     constructor(cellMatrix) {
         this.matrix = [];
-        for (let rowIdx = 0; rowIdx < cellMatrix.length; rowIdx++) {
+        this.numRows = cellMatrix.length;
+        this.numCols = cellMatrix[0].length;
+        for (let rowIdx = 0; rowIdx < this.numRows; rowIdx++) {
             const inputRow = cellMatrix[rowIdx];
             const currentRow = [];
-            for (let colIdx = 0; colIdx < inputRow.length; colIdx++) {
+            for (let colIdx = 0; colIdx < this.numCols; colIdx++) {
                 const val = inputRow[colIdx];
                 currentRow.push(new LifeCell(rowIdx, colIdx, val));
             }
@@ -18,11 +20,10 @@ export class LifeModel {
         if (rowIdx < 0 || colIdx < 0) {
             return 0;
         }
-        if (rowIdx >= this.matrix.length) {
+        if (rowIdx >= this.numRows) {
             return 0;
         }
-        const row = this.matrix[rowIdx];
-        if (colIdx >= row.length) {
+        if (colIdx >= this.numCols) {
             return 0;
         }
         return this.matrix[rowIdx][colIdx].value;
@@ -32,11 +33,10 @@ export class LifeModel {
         if (rowIdx < 0 || colIdx < 0) {
             return;
         }
-        if (rowIdx >= this.matrix.length) {
+        if (rowIdx >= this.numRows) {
             return;
         }
-        const row = this.matrix[rowIdx];
-        if (colIdx >= row.length) {
+        if (colIdx >= this.numCols) {
             return;
         }
         const cell = this.matrix[rowIdx][colIdx];
@@ -44,9 +44,9 @@ export class LifeModel {
     }
 
     update() {
-        for (let rowIdx = 0; rowIdx < this.matrix.length; rowIdx++) {
+        for (let rowIdx = 0; rowIdx < this.numRows; rowIdx++) {
             const currentRow = this.matrix[rowIdx];
-            for (let colIdx = 0; colIdx < currentRow.length; colIdx++) {
+            for (let colIdx = 0; colIdx < this.numCols; colIdx++) {
                 const currentCell = currentRow[colIdx];
                 currentCell.updateAlive(this);
             }
