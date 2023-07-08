@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Getting Started</title>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+        }
+
+        #canvas {
+            position: absolute;
+
+            top: 2rem;
+            left: 50%;
+            width: 640px;
+            height: 480px;
+
+            transform: translateX(-50%);
+        }
+    </style>
+</head>
+<body>
+<div id="canvas"></div>
+<script src="./dist/bundle.js"></script>
+<script>
+    Life.create("canvas");
+</script>
+</body>
+</html>
