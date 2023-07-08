@@ -1,48 +1,5 @@
 import Two from "two.js";
-
-const modelUpdateEvent = new Event('lifeModelUpdate');
-
-class LifeCell {
-    constructor(row, column, value) {
-        this.row = row;
-        this.col = column;
-        this.value = value;
-    }
-
-    updateAlive(matrix) {
-        const prevRow = this.row - 1;
-        const prevCol = this.col - 1;
-        const nextRow = this.row + 1;
-        const nextCol = this.col + 1;
-
-        const topNeighborVal = matrix.valueAt(prevRow, this.col);
-        const bottomNeighborVal = matrix.valueAt(nextRow, this.col);
-        const leftNeighborVal = matrix.valueAt(this.row, prevCol);
-        const rightNeighborVal = matrix.valueAt(this.row, nextCol);
-
-        const topLeftNeighborVal = matrix.valueAt(prevRow, prevCol);
-        const topRightNeighborVal = matrix.valueAt(prevRow, nextCol);
-        const bottomLeftNeighborVal = matrix.valueAt(nextRow, prevCol);
-        const bottomRightNeighborVal = matrix.valueAt(nextRow, nextCol);
-
-        const neighborCount = (
-            topNeighborVal +
-            bottomNeighborVal +
-            leftNeighborVal +
-            rightNeighborVal +
-            topLeftNeighborVal +
-            topRightNeighborVal +
-            bottomLeftNeighborVal +
-            bottomRightNeighborVal
-        );
-        const underpopulated = this.value === 1 && neighborCount < 2;
-        const staysLiving = this.value === 1 && (neighborCount === 2 || neighborCount === 3)
-        const overpopulated = this.value === 1 && neighborCount > 3;
-        const born = this.value === 0 && neighborCount === 3;
-
-        this.value = !underpopulated && !overpopulated && (staysLiving || born) ? 1 : 0;
-    }
-}
+import {LifeModel} from "./gameState";
 
 function updateView(gameModel, cellSize) {
     const newCells = [];
@@ -60,46 +17,6 @@ function updateView(gameModel, cellSize) {
     group.corner();
     group.add(...newCells);
     return group;
-}
-
-class LifeModel {
-    constructor(cellMatrix) {
-        this.matrix = [];
-        for (let rowIdx = 0; rowIdx < cellMatrix.length; rowIdx++) {
-            const inputRow = cellMatrix[rowIdx];
-            const currentRow = [];
-            for (let colIdx = 0; colIdx < inputRow.length; colIdx++) {
-                const val = inputRow[colIdx];
-                currentRow.push(new LifeCell(rowIdx, colIdx, val));
-            }
-            this.matrix.push(currentRow);
-        }
-    }
-
-    valueAt(rowIdx, colIdx) {
-        if (rowIdx < 0 || colIdx < 0) {
-            return 0;
-        }
-        if (rowIdx >= this.matrix.length) {
-            return 0;
-        }
-        const row = this.matrix[rowIdx];
-        if (colIdx >= row.length) {
-            return 0;
-        }
-        return this.matrix[rowIdx][colIdx].value;
-    }
-
-    update() {
-        for (let rowIdx = 0; rowIdx < this.matrix.length; rowIdx++) {
-            const currentRow = this.matrix[rowIdx];
-            for (let colIdx = 0; colIdx < currentRow.length; colIdx++) {
-                const currentCell = currentRow[colIdx];
-                currentCell.updateAlive(this);
-            }
-        }
-        window.dispatchEvent(modelUpdateEvent);
-    }
 }
 
 function createCell(cellSize, row, col) {
@@ -121,6 +38,7 @@ export function create(parent_id) {
     const parentElem = document.getElementById(parent_id);
     const twoOpts = {
         fitted: true,
+        autostart: false,
     };
     const two = new Two(twoOpts);
     two.appendTo(parentElem);
@@ -134,8 +52,8 @@ export function create(parent_id) {
     background.fill = 'black';
 
     const cellSize = Math.min(two.width, two.height) / 36;
-    const numRows = two.height / cellSize;
-    const numCols = two.width / cellSize;
+    const numRows = Math.round(two.height / cellSize);
+    const numCols = Math.round(two.width / cellSize);
 
     const gameModelRow = new Array(numCols).fill(0);
     const gameModelMatrix = [];
@@ -155,25 +73,28 @@ export function create(parent_id) {
     gameModelMatrix[9][12] = 1;
     gameModelMatrix[12][9] = 1;
 
+    gameModelMatrix[29][24] = 1;
+    gameModelMatrix[29][27] = 1;
+
     gameModelMatrix[30][25] = 1;
     gameModelMatrix[30][26] = 1;
+
     gameModelMatrix[31][25] = 1;
     gameModelMatrix[31][26] = 1;
+
+    gameModelMatrix[32][24] = 1;
+    gameModelMatrix[32][27] = 1;
 
     const gameModel = new LifeModel(gameModelMatrix);
 
     let cells = updateView(gameModel, cellSize);
     two.add(cells);
 
-    window.addEventListener(modelUpdateEvent.type, () => {
+    setInterval(() => {
+        gameModel.update();
         cells.remove();
         cells = updateView(gameModel, cellSize);
         two.add(cells);
-    });
-
-    two.play();
-
-    setInterval(() => {
-        gameModel.update();
-    }, 175);
+        two.update();
+    }, 100);
 }
