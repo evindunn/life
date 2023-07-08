@@ -28,6 +28,21 @@ export class LifeModel {
         return this.matrix[rowIdx][colIdx].value;
     }
 
+    toggleAt(rowIdx, colIdx) {
+        if (rowIdx < 0 || colIdx < 0) {
+            return;
+        }
+        if (rowIdx >= this.matrix.length) {
+            return;
+        }
+        const row = this.matrix[rowIdx];
+        if (colIdx >= row.length) {
+            return;
+        }
+        const cell = this.matrix[rowIdx][colIdx];
+        cell.value = cell.value === 0 ? 1 : 0;
+    }
+
     update() {
         for (let rowIdx = 0; rowIdx < this.matrix.length; rowIdx++) {
             const currentRow = this.matrix[rowIdx];

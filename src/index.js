@@ -1,13 +1,18 @@
 import Two from "two.js";
 import {LifeModel} from "./lifeModel";
 
-class LifeView {
-    constructor(model, cellSize) {
+class LifeController {
+    constructor(two, model, cellSize) {
+        this.two = two;
         this.model = model;
         this.cellSize = cellSize;
+        this.cells = this.makeTwoGroup();
+        this.two.add(this.cells);
+        this.two.update();
+        this.gameLoop = null;
     }
 
-    createCell(row, col) {
+    makeCell(row, col) {
         const realSize = this.cellSize - 1;
         const cell = new Two.Rectangle(
             col * this.cellSize + 0.5,
@@ -22,14 +27,14 @@ class LifeView {
         return cell;
     }
 
-    update() {
+    makeTwoGroup() {
         const newCells = [];
         for (let rowIdx = 0; rowIdx < this.model.matrix.length; rowIdx++) {
             const currentRow = this.model.matrix[rowIdx];
             for (let colIdx = 0; colIdx < currentRow.length; colIdx++) {
                 const currentCellVal = this.model.valueAt(rowIdx, colIdx);
                 if (currentCellVal === 1) {
-                    const newCell = this.createCell(rowIdx, colIdx);
+                    const newCell = this.makeCell(rowIdx, colIdx);
                     newCells.push(newCell);
                 }
             }
@@ -40,8 +45,27 @@ class LifeView {
         return group;
     }
 
-    addTo(elementSelector) {
-        
+    update() {
+        this.two.remove(this.cells);
+        this.cells = this.makeTwoGroup();
+        this.two.add(this.cells);
+        this.two.update();
+    }
+
+    start() {
+        if (this.gameLoop === null) {
+            this.gameLoop = setInterval(() => {
+                this.model.update();
+                this.update();
+            }, 125);
+        }
+    }
+
+    stop() {
+        if (this.gameLoop !== null) {
+            clearInterval(this.gameLoop);
+            this.gameLoop = null;
+        }
     }
 }
 
@@ -97,16 +121,10 @@ export function create(parent_id) {
     gameModelMatrix[32][27] = 1;
 
     const gameModel = new LifeModel(gameModelMatrix);
-    const gameView = new LifeView(gameModel, cellSize);
+    const gameController = new LifeController(two, gameModel, cellSize);
 
-    let cells = gameView.update();
-    two.add(cells);
-
-    setInterval(() => {
-        gameModel.update();
-        cells.remove();
-        cells = gameView.update();
-        two.add(cells);
-        two.update();
-    }, 100);
+    gameController.start();
+    setTimeout(() => {
+        gameController.stop();
+    }, 3000);
 }
