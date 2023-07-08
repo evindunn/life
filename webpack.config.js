@@ -8,6 +8,7 @@ module.exports = {
     output: {
         filename: 'bundle.js',
         path: path.resolve(__dirname, 'dist'),
+        libraryExport: "default",
         library: {
             type: "var",
             name: "Life"

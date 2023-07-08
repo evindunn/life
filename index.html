@@ -10,22 +10,37 @@
         }
 
         #canvas {
-            position: absolute;
-
-            top: 2rem;
-            left: 50%;
+            margin: 2rem auto;
             width: 640px;
             height: 480px;
+        }
 
-            transform: translateX(-50%);
+        #controls {
+            text-align: center;
         }
     </style>
 </head>
 <body>
 <div id="canvas"></div>
+<div id="controls">
+    <button id="start">Start</button>
+    <button id="stop" disabled>Stop</button>
+</div>
 <script src="./dist/bundle.js"></script>
 <script>
-    Life.create("canvas");
+    const life = new Life("canvas");
+    const startBtn = document.getElementById("start");
+    const stopBtn = document.getElementById("stop");
+    startBtn.addEventListener('click', () => {
+        life.start();
+        stopBtn.disabled = false;
+        startBtn.disabled = true;
+    });
+    stopBtn.addEventListener('click', () => {
+        life.stop();
+        stopBtn.disabled = true;
+        startBtn.disabled = false;
+    });
 </script>
 </body>
 </html>
