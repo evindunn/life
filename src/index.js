@@ -39,6 +39,10 @@ class LifeView {
         group.add(...newCells);
         return group;
     }
+
+    addTo(elementSelector) {
+        
+    }
 }
 
 export function create(parent_id) {

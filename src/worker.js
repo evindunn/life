@@ -1,0 +1,2 @@
+import {LifeModel} from "./lifeModel";
+
