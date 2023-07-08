@@ -23,6 +23,7 @@
 <body>
 <div id="canvas"></div>
 <div id="controls">
+    <p>Generation: <span id="generations">0</span></p>
     <button id="start">Start</button>
     <button id="stop" disabled>Stop</button>
 </div>
@@ -31,6 +32,8 @@
     const life = new Life("canvas");
     const startBtn = document.getElementById("start");
     const stopBtn = document.getElementById("stop");
+    const generations = document.getElementById("generations");
+
     startBtn.addEventListener('click', () => {
         life.start();
         stopBtn.disabled = false;
@@ -40,6 +43,10 @@
         life.stop();
         stopBtn.disabled = true;
         startBtn.disabled = false;
+    });
+
+    life.addUpdateListener(() => {
+        generations.textContent = life.generation.toLocaleString();
     });
 </script>
 </body>

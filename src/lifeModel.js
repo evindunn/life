@@ -3,6 +3,9 @@ export class LifeModel {
         this.matrix = [];
         this.numRows = cellMatrix.length;
         this.numCols = cellMatrix[0].length;
+        this.generation = 1;
+        this.onUpdateListeners = [];
+
         for (let rowIdx = 0; rowIdx < this.numRows; rowIdx++) {
             const inputRow = cellMatrix[rowIdx];
             const currentRow = [];
@@ -88,5 +91,17 @@ export class LifeModel {
             }
         }
         this.matrix = newVals;
+        this.generation += 1;
+        for (const listener of this.onUpdateListeners) {
+            listener();
+        }
+    }
+
+    addUpdateListener(func) {
+        this.onUpdateListeners.push(func);
+    }
+
+    removeUpdateListener(func) {
+        this.onUpdateListeners.remove(func);
     }
 }

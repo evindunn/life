@@ -34,8 +34,8 @@ export default class Life {
         this.gameController = new LifeController(two, gameModel, cellSize);
     }
 
-    isRunning() {
-        return this.gameController.isRunning;
+    get generation() {
+        return this.gameController.generation;
     }
 
     start() {
@@ -44,5 +44,13 @@ export default class Life {
 
     stop() {
         this.gameController.stop();
+    }
+
+    addUpdateListener(func) {
+        this.gameController.addUpdateListener(func);
+    }
+
+    removeUpdateListener(func) {
+        this.gameController.removeUpdateListener(func);
     }
 }

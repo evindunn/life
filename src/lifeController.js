@@ -77,7 +77,7 @@ export class LifeController {
             this.gameLoop = setInterval(() => {
                 this.model.update();
                 this.updateView();
-            }, 125);
+            }, 75);
         }
     }
 
@@ -86,5 +86,17 @@ export class LifeController {
             clearInterval(this.gameLoop);
             this.gameLoop = null;
         }
+    }
+
+    get generation() {
+        return this.model.generation;
+    }
+
+    addUpdateListener(func) {
+        this.model.addUpdateListener(func);
+    }
+
+    removeUpdateListener(func) {
+        this.model.removeUpdateListener(func);
     }
 }
