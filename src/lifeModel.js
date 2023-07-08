@@ -10,7 +10,7 @@ export class LifeModel {
             const currentRow = [];
             for (let colIdx = 0; colIdx < this.numCols; colIdx++) {
                 const val = inputRow[colIdx];
-                currentRow.push(new LifeCell(rowIdx, colIdx, val));
+                currentRow.push(val);
             }
             this.matrix.push(currentRow);
         }
@@ -26,7 +26,7 @@ export class LifeModel {
         if (colIdx >= this.numCols) {
             return 0;
         }
-        return this.matrix[rowIdx][colIdx].value;
+        return this.matrix[rowIdx][colIdx];
     }
 
     toggleAt(rowIdx, colIdx) {
@@ -40,16 +40,24 @@ export class LifeModel {
             return;
         }
         const cell = this.matrix[rowIdx][colIdx];
-        cell.value = cell.value === 0 ? 1 : 0;
+        this.matrix[rowIdx][colIdx] = cell === 0 ? 1 : 0;
     }
 
     update() {
+        const newVals = [];
+        const newCol = new Array(this.numCols).fill(0);
+        while (newVals.length < this.numRows) {
+            newVals.push([...newCol]);
+        }
         for (let rowIdx = 0; rowIdx < this.numRows; rowIdx++) {
             const currentRow = this.matrix[rowIdx];
             for (let colIdx = 0; colIdx < this.numCols; colIdx++) {
-                const currentCell = currentRow[colIdx];
-                currentCell.updateAlive(this);
+                const currentVal = currentRow[colIdx];
+                const cell = new LifeCell(rowIdx, colIdx, currentVal);
+                cell.updateAlive(this);
+                newVals[rowIdx][colIdx] = cell.value;
             }
         }
+        this.matrix = newVals;
     }
 }
