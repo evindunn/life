@@ -3,7 +3,7 @@ import {LifeModel} from "./lifeModel";
 import {LifeController} from "./lifeController";
 
 export default class Life {
-    constructor(parentID) {
+    constructor(parentID, resolution) {
         const parentElem = document.getElementById(parentID);
         const twoOpts = {
             fitted: true,
@@ -20,7 +20,7 @@ export default class Life {
         );
         background.fill = 'black';
 
-        const cellSize = Math.min(two.width, two.height) / 36;
+        const cellSize = Math.min(two.width, two.height) / resolution;
         const numRows = Math.round(two.height / cellSize);
         const numCols = Math.round(two.width / cellSize);
 

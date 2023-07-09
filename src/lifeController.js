@@ -1,13 +1,35 @@
 import Two from "two.js";
 
+const GRID_COLOR = '#888888';
+
 export class LifeController {
     constructor(two, model, cellSize) {
         this.two = two;
         this.model = model;
         this.cellSize = cellSize;
+
         this.cells = this.makeTwoGroup();
         this.two.add(this.cells);
+
+        this.grid = this.two.makeGroup();
+        this.grid.corner();
+
+        for (let x = 0; x < this.two.width; x += this.cellSize) {
+            const line = new Two.Line(x, 0, x, this.two.height);
+            line.stroke = GRID_COLOR;
+            line.linewidth = 1;
+            this.grid.add(line);
+        }
+        for (let y = 0; y < this.two.height; y+= this.cellSize) {
+            const line = new Two.Line(0, y, this.two.width, y);
+            line.stroke = GRID_COLOR;
+            line.linewidth = 1;
+            this.grid.add(line);
+        }
+
+        this.two.add(this.grid);
         this.two.update();
+
         this.gameLoop = null;
         this.two.renderer.domElement.addEventListener('click', (e) => {
             this.onCanvasClicked(e);
@@ -74,6 +96,7 @@ export class LifeController {
 
     start() {
         if (!this.isRunning) {
+            this.two.remove(this.grid);
             this.gameLoop = setInterval(() => {
                 this.model.update();
                 this.updateView();
@@ -85,6 +108,8 @@ export class LifeController {
         if (this.isRunning) {
             clearInterval(this.gameLoop);
             this.gameLoop = null;
+            this.two.add(this.grid);
+            this.two.update();
         }
     }
 
