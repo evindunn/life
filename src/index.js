@@ -38,6 +38,13 @@ export default class Life {
         return this.gameController.generation;
     }
 
+    getGameState() {
+        return {
+            generation: this.generation,
+            gameState: this.gameController.model.matrix
+        };
+    }
+
     start() {
         this.gameController.start();
     }
