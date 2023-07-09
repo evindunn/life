@@ -56,6 +56,7 @@
 
     startBtn.addEventListener('click', () => {
         life.start();
+        gameStateTextArea.classList.add("hidden");
         gameStateContainer.classList.add("hidden");
         stopBtn.disabled = false;
         startBtn.disabled = true;
