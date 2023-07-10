@@ -28,7 +28,7 @@ export class LifeController {
         }
 
         this.two.add(this.grid);
-        this.two.update();
+        this._render();
 
         this.gameLoop = null;
         this.two.renderer.domElement.addEventListener('click', (e) => {
@@ -38,6 +38,10 @@ export class LifeController {
 
     get isRunning() {
         return this.gameLoop !== null;
+    }
+
+    _render() {
+        requestAnimationFrame(() => this.two.update());
     }
 
     makeCell(row, col) {
@@ -91,7 +95,7 @@ export class LifeController {
         this.two.remove(this.cells);
         this.cells = this.makeTwoGroup();
         this.two.add(this.cells);
-        this.two.update();
+        this._render();
     }
 
     start() {
@@ -109,7 +113,7 @@ export class LifeController {
             clearInterval(this.gameLoop);
             this.gameLoop = null;
             this.two.add(this.grid);
-            this.two.update();
+            this._render();
         }
     }
 

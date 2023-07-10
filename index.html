@@ -71,7 +71,7 @@
     });
     showGameStateBtn.addEventListener('click', () => {
         if (gameStateTextArea.classList.contains("hidden")) {
-            const gameState = life.getGameState()["gameState"];
+            const gameState = life.getGameState();
             gameStateTextArea.textContent = '[\n';
             for (let row = 0; row < gameState.length; row++) {
                 const currentRow = gameState[row];
