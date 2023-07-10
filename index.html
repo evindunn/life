@@ -21,7 +21,10 @@
 
         #game-state-text {
             font-family: monospace;
-            width: 95%;
+            overflow: scroll;
+            resize: none;
+            white-space: pre;
+            width: 75%;
         }
 
         .hidden {
@@ -40,7 +43,7 @@
     <p>
         <button id="show-game-state">Show Game State</button>
     </p>
-    <textarea id="game-state-text" readonly class="hidden" rows="40" cols="80"></textarea>
+    <textarea id="game-state-text" name="game-state-text" readonly class="hidden" rows="40"></textarea>
 </div>
 <script src="./dist/bundle.js"></script>
 <script>
@@ -51,8 +54,6 @@
     const gameStateContainer = document.getElementById("game-state");
     const showGameStateBtn = document.getElementById("show-game-state");
     const gameStateTextArea = document.getElementById("game-state-text");
-
-    gameStateTextArea.rows = Math.round(life.gameController.two.height / life.gameController.cellSize) + 1;
 
     startBtn.addEventListener('click', () => {
         life.start();
@@ -75,7 +76,7 @@
             gameStateTextArea.textContent = '[\n';
             for (let row = 0; row < gameState.length; row++) {
                 const currentRow = gameState[row];
-                gameStateTextArea.textContent += '\t[';
+                gameStateTextArea.textContent += '  [';
                 gameStateTextArea.textContent += currentRow.join(', ');
                 gameStateTextArea.textContent += ']';
                 if (row < gameState.length - 1) {
