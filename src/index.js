@@ -1,3 +1,5 @@
+import "./index.css";
+
 import Two from "two.js";
 import {LifeModel} from "./lifeModel";
 import {LifeController} from "./lifeController";
@@ -42,6 +44,10 @@ export default class Life {
         return this.gameController.model.matrix
     }
 
+    setGameState(gameState) {
+        this.gameController.model.matrix = gameState;
+    }
+
     start() {
         this.gameController.start();
     }
@@ -58,3 +64,17 @@ export default class Life {
         this.gameController.removeUpdateListener(func);
     }
 }
+
+const life = new Life("app", 100);
+const gameState = life.getGameState();
+
+console.debug(`gateState is ${gameState[0].length}x${gameState.length}`);
+for (let rowIdx = 0; rowIdx < gameState.length; rowIdx++) {
+    const row = [...gameState[rowIdx]];
+    for (let colIdx = 0; colIdx < row.length; colIdx++) {
+        row[colIdx] = Math.round(Math.random() + 2) - 2;
+    }
+    gameState[rowIdx] = row;
+}
+life.setGameState(gameState);
+life.start();
