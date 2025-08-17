@@ -41,6 +41,16 @@ ol, li {
     margin-top: auto;
 }
 
+.mx-025 {
+    margin-left: 0.25rem;
+    margin-right: 0.25rem;
+}
+
+.mx-1 {
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
 .mx-2 {
     margin-left: 2rem;
     margin-right: 2rem;
@@ -55,6 +65,10 @@ ol, li {
     text-align: center;
 }
 
+.w-fit {
+    width: fit-content;
+}
+
 /*
     By ID, in alphabetical order
 */
@@ -65,6 +79,9 @@ div#game {
     margin: 3rem auto;
 }
 
-div#rule-list {
-    width: fit-content;
+div#bottom-bar {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    margin-bottom: 1rem;
 }
