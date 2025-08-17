@@ -29,7 +29,7 @@ export default class Life {
         const gameModelRow = new Array(numCols).fill(0);
         const gameModelMatrix = [];
         while (gameModelMatrix.length < numRows) {
-            gameModelMatrix.push([...gameModelRow]);
+            gameModelMatrix.push(gameModelRow);
         }
 
         const gameModel = new LifeModel(gameModelMatrix);
@@ -65,16 +65,17 @@ export default class Life {
     }
 }
 
-const life = new Life("app", 100);
+const life = new Life("app", 75);
 const gameState = life.getGameState();
 
 console.debug(`gateState is ${gameState[0].length}x${gameState.length}`);
 for (let rowIdx = 0; rowIdx < gameState.length; rowIdx++) {
     const row = [...gameState[rowIdx]];
     for (let colIdx = 0; colIdx < row.length; colIdx++) {
-        row[colIdx] = Math.round(Math.random() + 2) - 2;
+        row[colIdx] = Math.round(Math.random() * 100) % 10 === 0 ? 1 : 0;
     }
     gameState[rowIdx] = row;
+    console.debug(row);
 }
 life.setGameState(gameState);
 life.start();
