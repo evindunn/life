@@ -1,6 +1,70 @@
+html, body {
+    font-family: Arial, Helvetica, sans-serif;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
 
-div#app {
-    width: 640px;
-    height: 480px;
+/*
+    Elements in alphabetical order
+*/
+ol, li {
+    text-align: start;
+}
+
+/*
+    Classes in alphabetical order
+*/
+
+.d-flex {
+    display: flex;
+    width: 100%;
+}
+
+.flex-column {
+    flex-direction: column;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.align-items-center {
+    align-items: center;
+}
+
+.description-column {
+    max-width: 45rem;
+}
+
+.mt-auto {
+    margin-top: auto;
+}
+
+.mx-2 {
+    margin-left: 2rem;
+    margin-right: 2rem;
+}
+
+.mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/*
+    By ID, in alphabetical order
+*/
+
+div#game {
+    width: 1280px;
+    height: 720px;
     margin: 3rem auto;
+}
+
+div#rule-list {
+    width: fit-content;
 }

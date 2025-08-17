@@ -65,7 +65,7 @@ export default class Life {
     }
 }
 
-const life = new Life("app", 75);
+const life = new Life("game", 100);
 const gameState = life.getGameState();
 
 console.debug(`gateState is ${gameState[0].length}x${gameState.length}`);
