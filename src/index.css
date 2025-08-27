@@ -5,6 +5,10 @@ html, body {
     padding: 0;
 }
 
+body {
+    min-height: 1200px;
+}
+
 /*
     Elements in alphabetical order
 */
@@ -19,6 +23,11 @@ ol, li {
 .d-flex {
     display: flex;
     width: 100%;
+}
+
+.d-inline-block {
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .flex-column {
@@ -66,6 +75,12 @@ ol, li {
     margin-bottom: 1rem;
 }
 
+.pipe-separator {
+    color: lightgray;
+    font-size: 1.25rem;
+    transform: translateY(-0.125rem);
+}
+
 .text-center {
     text-align: center;
 }
@@ -93,7 +108,12 @@ div#game {
 
 div#bottom-bar {
     position: absolute;
-    width: 100%;
     bottom: 0;
     margin-bottom: 1rem;
+
+    /* Min height of body */
+    @media only screen and (max-height: 1199px) {
+        position: static;
+        margin-top: 5rem;
+    }
 }
