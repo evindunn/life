@@ -77,10 +77,8 @@ const resetBtn = document.getElementById("reset");
 
 function reset() {
     const gameState = life.getGameState();
-
     for (let rowIdx = 0; rowIdx < gameState.length; rowIdx++) {
         const row = gameState[rowIdx];
-        row.fill(0);
         for (let colIdx = 0; colIdx < row.length; colIdx++) {
             row[colIdx] = Math.round(Math.random() * 100) % 10 === 0 ? 1 : 0;
         }

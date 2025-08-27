@@ -81,7 +81,14 @@ ol, li {
 div#game {
     width: 1280px;
     height: 720px;
+    padding: 0;
     margin: 3rem auto;
+
+    @media only screen and (max-width: 1279px) {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
 }
 
 div#bottom-bar {
