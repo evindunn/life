@@ -56,7 +56,6 @@ export class LifeController {
         cell.origin = new Two.Vector(originCoords, originCoords);
         cell.fill = 'white';
         cell.linewidth = 0;
-
         return cell;
     }
 

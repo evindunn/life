@@ -1,19 +1,14 @@
 export class LifeModel {
     constructor(cellMatrix) {
-        this.matrix = [];
         this.numRows = cellMatrix.length;
         this.numCols = cellMatrix[0].length;
         this.generation = 1;
         this.onUpdateListeners = [];
 
+        this.matrix = new Array(this.numRows);
         for (let rowIdx = 0; rowIdx < this.numRows; rowIdx++) {
             const inputRow = cellMatrix[rowIdx];
-            const currentRow = [];
-            for (let colIdx = 0; colIdx < this.numCols; colIdx++) {
-                const val = inputRow[colIdx];
-                currentRow.push(val);
-            }
-            this.matrix.push(currentRow);
+            this.matrix[rowIdx] = [...inputRow];
         }
     }
 
@@ -80,12 +75,9 @@ export class LifeModel {
     }
 
     update() {
-        const newVals = [];
-        const newCol = new Array(this.numCols).fill(0);
-        while (newVals.length < this.numRows) {
-            newVals.push([...newCol]);
-        }
+        const newVals = new Array(this.numRows);
         for (let rowIdx = 0; rowIdx < this.numRows; rowIdx++) {
+            newVals[rowIdx] =  new Array(this.numCols).fill(0);
             for (let colIdx = 0; colIdx < this.numCols; colIdx++) {
                 newVals[rowIdx][colIdx] = this.updateValue(rowIdx, colIdx);
             }

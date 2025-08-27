@@ -56,6 +56,10 @@ export default class Life {
         this.gameController.stop();
     }
 
+    updateView() {
+        this.gameController.updateView();
+    }
+
     addUpdateListener(func) {
         this.gameController.addUpdateListener(func);
     }
@@ -66,16 +70,43 @@ export default class Life {
 }
 
 const life = new Life("game", 100);
-const gameState = life.getGameState();
 
-console.debug(`gateState is ${gameState[0].length}x${gameState.length}`);
-for (let rowIdx = 0; rowIdx < gameState.length; rowIdx++) {
-    const row = [...gameState[rowIdx]];
-    for (let colIdx = 0; colIdx < row.length; colIdx++) {
-        row[colIdx] = Math.round(Math.random() * 100) % 10 === 0 ? 1 : 0;
+const playBtn = document.getElementById("play");
+const pauseBtn = document.getElementById("pause");
+const resetBtn = document.getElementById("reset");
+
+function reset() {
+    const gameState = life.getGameState();
+
+    for (let rowIdx = 0; rowIdx < gameState.length; rowIdx++) {
+        const row = gameState[rowIdx];
+        row.fill(0);
+        for (let colIdx = 0; colIdx < row.length; colIdx++) {
+            row[colIdx] = Math.round(Math.random() * 100) % 10 === 0 ? 1 : 0;
+        }
+        console.debug(row);
+        gameState[rowIdx] = row;
     }
-    gameState[rowIdx] = row;
-    console.debug(row);
+    life.setGameState(gameState);
+    life.updateView();
 }
-life.setGameState(gameState);
+
+playBtn.addEventListener("click", () => {
+    life.start();
+    playBtn.disabled = true;
+    pauseBtn.disabled = false;
+});
+
+pauseBtn.addEventListener("click", () => {
+    life.stop();
+    playBtn.disabled = false;
+    pauseBtn.disabled = true;
+});
+
+resetBtn.addEventListener("click", () => {
+    pauseBtn.click();
+    reset();
+});
+
+reset();
 life.start();
