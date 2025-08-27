@@ -8,7 +8,20 @@ export class LifeController {
         this.model = model;
         this.cellSize = cellSize;
 
-        this.cells = this.makeTwoGroup();
+        this.cells = new Two.Group();
+        this.cells.corner();
+        for (let rowIdx = 0; rowIdx < this.model.matrix.length; rowIdx++) {
+            const currentRow = this.model.matrix[rowIdx];
+            const rowGroup = new Two.Group();
+            rowGroup.corner();
+            for (let colIdx = 0; colIdx < currentRow.length; colIdx++) {
+                const currentCellVal = this.model.valueAt(rowIdx, colIdx);
+                const cell = this.makeCell(rowIdx, colIdx);
+                cell.fill = currentCellVal === 1 ? 'white' : null;
+                rowGroup.add(cell);
+            }
+            this.cells.add(rowGroup);
+        }
         this.two.add(this.cells);
 
         this.grid = this.two.makeGroup();
@@ -54,27 +67,8 @@ export class LifeController {
         );
         const originCoords = -realSize / 2;
         cell.origin = new Two.Vector(originCoords, originCoords);
-        cell.fill = 'white';
         cell.linewidth = 0;
         return cell;
-    }
-
-    makeTwoGroup() {
-        const newCells = [];
-        for (let rowIdx = 0; rowIdx < this.model.matrix.length; rowIdx++) {
-            const currentRow = this.model.matrix[rowIdx];
-            for (let colIdx = 0; colIdx < currentRow.length; colIdx++) {
-                const currentCellVal = this.model.valueAt(rowIdx, colIdx);
-                if (currentCellVal === 1) {
-                    const newCell = this.makeCell(rowIdx, colIdx);
-                    newCells.push(newCell);
-                }
-            }
-        }
-        const group = new Two.Group();
-        group.corner();
-        group.add(...newCells);
-        return group;
     }
 
     onCanvasClicked(e) {
@@ -91,9 +85,14 @@ export class LifeController {
     }
 
     updateView() {
-        this.two.remove(this.cells);
-        this.cells = this.makeTwoGroup();
-        this.two.add(this.cells);
+        for (let rowIdx = 0; rowIdx < this.cells.children.length; rowIdx++) {
+            const rowGroup = this.cells.children[rowIdx];
+            for (let colIdx = 0; colIdx < rowGroup.children.length; colIdx++) {
+                const currentCellVal = this.model.valueAt(rowIdx, colIdx);
+                const cell = rowGroup.children[colIdx];
+                cell.fill = currentCellVal === 1 ? 'white' : null;
+            }
+        }
         this._render();
     }
 
