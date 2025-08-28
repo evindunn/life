@@ -162,5 +162,7 @@ loadBtn.addEventListener("click", () => {
     ulInput.click();
 });
 
-reset();
-life.start();
+window.addEventListener("load", () => {
+    reset();
+    life.start();
+});
