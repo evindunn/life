@@ -45,25 +45,45 @@
     </div>
 </div>
 <div id="game"></div>
-<div class="d-flex align-items-center justify-center">
-    <div class="mx-1">
+<div id="controls" class="d-flex align-items-center justify-center">
+    <div class="mx-1 control-button">
         <button id="play">
             Play
         </button>
     </div>
-    <div class="mx-1">
+    <div class="mx-1 control-button">
         <button id="pause">
             Pause
         </button>
     </div>
-    <div class="mx-1">
+    <div class="mx-1 control-button">
         <button id="reset">
             Reset
         </button>
     </div>
+    <div class="mx-1 control-button">
+        <button id="clear">
+            Clear
+        </button>
+    </div>
+    <div class="mx-1 control-button">
+        <button id="save">
+            Save
+        </button>
+    </div>
+    <div class="mx-1 control-button">
+        <button id="load">
+            Load
+        </button>
+    </div>
 </div>
-<div id="bottom-bar" class="mx-2 d-flex justify-center">
-    <span>
+<div class="d-none">
+    <a id="download-link" href="#" download="gol.json"></a>
+    <input id="upload-input" type="file" accept=".json">
+</div>
+<div id="upload-error" class="d-none text-center mt-2"></div>
+<div id="bottom-bar" class="mx-2">
+    <span class="bottom-link">
         The source is available on
         <span class="d-inline-block">
             <a href="https://github.com/evindunn/life" target="_blank">
@@ -72,7 +92,7 @@
         </span>
     </span>
     <span class="d-inline-block mx-1 pipe-separator"> | </span>
-    <span>
+    <span class="bottom-link">
         Here's my
         <span class="d-inline-block">
             <a href="https://www.linkedin.com/in/evin-dunn-b39a02158" target="_blank">
@@ -81,7 +101,7 @@
         </span>
     </span>
     <span class="d-inline-block mx-1 pipe-separator"> | </span>
-    <span>
+    <span class="bottom-link">
         If you think this is cool you can
         <span class="d-inline-block">
             <a href="https://buymeacoffee.com/evindunn" target="_blank">

@@ -67,6 +67,10 @@ export default class Life {
     removeUpdateListener(func) {
         this.gameController.removeUpdateListener(func);
     }
+
+    clear() {
+        this.gameController.clear();
+    }
 }
 
 const life = new Life("game", 100);
@@ -74,6 +78,12 @@ const life = new Life("game", 100);
 const playBtn = document.getElementById("play");
 const pauseBtn = document.getElementById("pause");
 const resetBtn = document.getElementById("reset");
+const clearBtn = document.getElementById("clear");
+const saveBtn = document.getElementById("save");
+const loadBtn = document.getElementById("load");
+const dlLink = document.getElementById("download-link");
+const ulInput = document.getElementById("upload-input");
+const ulErr = document.getElementById("upload-error");
 
 function reset() {
     const gameState = life.getGameState();
@@ -90,6 +100,7 @@ function reset() {
 }
 
 playBtn.addEventListener("click", () => {
+    ulErr.classList.add("d-none");
     life.start();
     playBtn.disabled = true;
     pauseBtn.disabled = false;
@@ -102,8 +113,53 @@ pauseBtn.addEventListener("click", () => {
 });
 
 resetBtn.addEventListener("click", () => {
+    ulErr.classList.add("d-none");
     pauseBtn.click();
     reset();
+});
+
+clearBtn.addEventListener("click", () => {
+    ulErr.classList.add("d-none");
+    pauseBtn.click();
+    life.clear();
+    life.updateView();
+});
+
+saveBtn.addEventListener("click", () => {
+    pauseBtn.click();
+    const asJSON = JSON.stringify(life.getGameState());
+    dlLink.href = URL.createObjectURL(new Blob([asJSON], { type: "application/json" }));
+    dlLink.click();
+    dlLink.href = '#';
+});
+
+ulInput.addEventListener("change", (e) => {
+    ulErr.classList.add("d-none");
+    const file = e.target.files[0] || null;
+    if (file === null) {
+        console.warn("no file selected");
+        return;
+    }
+    const fileReader = new FileReader();
+    fileReader.addEventListener("loadend", (e) => {
+        try {
+            const fromJSON = JSON.parse(e.target.result.toString());
+            life.setGameState(fromJSON);
+            life.updateView();
+        } catch (e) {
+            const err = `Invalid file: ${e.toString()}`;
+            ulErr.innerText = err;
+            ulErr.classList.remove("d-none");
+            console.error(err);
+        }
+        ulInput.value = "";
+    }, { once: true });
+    fileReader.readAsText(file);
+});
+
+loadBtn.addEventListener("click", () => {
+    pauseBtn.click();
+    ulInput.click();
 });
 
 reset();

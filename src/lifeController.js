@@ -126,4 +126,12 @@ export class LifeController {
     removeUpdateListener(func) {
         this.model.removeUpdateListener(func);
     }
+
+    clear() {
+        for (let rowIdx = 0; rowIdx < this.model.numRows; rowIdx++) {
+            for (let colIdx = 0; colIdx < this.model.numCols; colIdx++) {
+                this.model.matrix[rowIdx][colIdx] = 0;
+            }
+        }
+    }
 }

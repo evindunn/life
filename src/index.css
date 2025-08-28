@@ -20,6 +20,20 @@ ol, li {
     Classes in alphabetical order
 */
 
+.bottom-link {
+    @media only screen and (max-height: 1275px) {
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+}
+
+.control-button {
+    @media only screen and (max-width: 1279px) {
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+}
+
 .d-flex {
     display: flex;
     width: 100%;
@@ -28,6 +42,10 @@ ol, li {
 .d-inline-block {
     display: inline-block;
     vertical-align: middle;
+}
+
+.d-none {
+    display: none;
 }
 
 .flex-column {
@@ -46,8 +64,8 @@ ol, li {
     max-width: 45rem;
 }
 
-.mt-auto {
-    margin-top: auto;
+.mt-2 {
+    margin-top: 2rem;
 }
 
 .mx-025 {
@@ -79,19 +97,45 @@ ol, li {
     color: lightgray;
     font-size: 1.25rem;
     transform: translateY(-0.125rem);
+
+    @media only screen and (max-height: 1275px) {
+        display: none;
+    }
 }
 
 .text-center {
     text-align: center;
 }
 
-.w-fit {
-    width: fit-content;
-}
-
 /*
     By ID, in alphabetical order
 */
+
+div#bottom-bar {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 1rem;
+
+    /* Min height of body */
+    @media only screen and (max-height: 1275px) {
+        position: static;
+        margin-top: 5rem;
+        justify-content: start;
+        flex-direction: column;
+    }
+}
+
+div#controls {
+    @media only screen and (max-width: 1279px) {
+        flex-direction: column;
+        flex-grow: 1;
+    }
+}
 
 div#game {
     width: 1280px;
@@ -106,14 +150,7 @@ div#game {
     }
 }
 
-div#bottom-bar {
-    position: absolute;
-    bottom: 0;
-    margin-bottom: 1rem;
-
-    /* Min height of body */
-    @media only screen and (max-height: 1199px) {
-        position: static;
-        margin-top: 5rem;
-    }
+div#upload-error {
+    color: red;
+    font-weight: bold;
 }
