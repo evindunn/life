@@ -1,3 +1,5 @@
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
@@ -13,14 +15,26 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: 'src/index.ejs'
+        }),
+        new MiniCssExtractPlugin({
+            filename: "bundle.css",
         })
     ],
     module: {
         rules: [
             {
                 test: /\.css$/i,
-                use: ["style-loader", "css-loader"],
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    "css-loader"
+                ],
             },
         ],
     },
+    optimization: {
+        minimizer: [
+            `...`,
+            new CssMinimizerPlugin(),
+        ]
+    }
 };
