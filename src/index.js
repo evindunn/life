@@ -1,194 +1,126 @@
 import "./index.css";
+import { LifeApp } from "./lifeApp";
 
-import Two from "two.js";
-import {LifeModel} from "./lifeModel";
-import {LifeController} from "./lifeController";
+const APP_CONTAINER_ID = "game";
+const APP_RESOLUTION_MAX = 100;
 
-export default class Life {
-    constructor(parentID, resolution) {
-        const parentElem = document.getElementById(parentID);
-        const twoOpts = {
-            fitted: true,
-            autostart: false,
-            // type: Two.Types.webgl,
-        };
-        const two = new Two(twoOpts);
-        two.appendTo(parentElem);
+function main() {
+    const life = new LifeApp(APP_CONTAINER_ID, APP_RESOLUTION_MAX);
 
-        const background = two.makeRectangle(
-            two.width / 2,
-            two.height / 2,
-            two.width,
-            two.height
-        );
-        background.fill = 'black';
+    const playBtn = document.getElementById("play");
+    const pauseBtn = document.getElementById("pause");
+    const resetBtn = document.getElementById("reset");
+    const clearBtn = document.getElementById("clear");
+    const saveBtn = document.getElementById("save");
+    const loadBtn = document.getElementById("load");
+    const saveFileContainer = document.getElementById("save-file-container");
+    const saveFileInput = document.getElementById("save-file-name");
+    const saveFileBtn = document.getElementById("save-file");
+    const dlLink = document.getElementById("download-link");
+    const ulInput = document.getElementById("upload-input");
+    const errContainer = document.getElementById("error");
 
-        const cellSize = Math.min(two.width, two.height) / resolution;
-        const numRows = Math.round(two.height / cellSize);
-        const numCols = Math.round(two.width / cellSize);
-
-        const gameModelRow = new Array(numCols).fill(0);
-        const gameModelMatrix = [];
-        while (gameModelMatrix.length < numRows) {
-            gameModelMatrix.push(gameModelRow);
+    function reset() {
+        const gameState = life.getGameState();
+        for (let rowIdx = 0; rowIdx < gameState.length; rowIdx++) {
+            const row = gameState[rowIdx];
+            for (let colIdx = 0; colIdx < row.length; colIdx++) {
+                row[colIdx] = Math.round(Math.random() * 100) % 10 === 0 ? 1 : 0;
+            }
+            console.debug(row);
+            gameState[rowIdx] = row;
         }
-
-        const gameModel = new LifeModel(gameModelMatrix);
-        this.gameController = new LifeController(two, gameModel, cellSize);
+        life.setGameState(gameState);
+        life.updateView();
     }
 
-    get generation() {
-        return this.gameController.generation;
+    function disableSaveDialog() {
+        saveFileInput.value = "";
+        saveFileContainer.classList.add("d-none");
+        saveBtn.disabled = false;
+        errContainer.classList.add("hide");
     }
 
-    getGameState() {
-        return this.gameController.model.matrix
-    }
+    playBtn.addEventListener("click", () => {
+        errContainer.classList.add("hide");
+        life.start();
+        playBtn.disabled = true;
+        pauseBtn.disabled = false;
+        disableSaveDialog();
+    });
 
-    setGameState(gameState) {
-        this.gameController.model.matrix = gameState;
-    }
+    pauseBtn.addEventListener("click", () => {
+        life.stop();
+        playBtn.disabled = false;
+        pauseBtn.disabled = true;
+    });
 
-    start() {
-        this.gameController.start();
-    }
+    resetBtn.addEventListener("click", () => {
+        pauseBtn.click();
+        reset();
+    });
 
-    stop() {
-        this.gameController.stop();
-    }
+    clearBtn.addEventListener("click", () => {
+        pauseBtn.click();
+        life.clear();
+        life.updateView();
+    });
 
-    updateView() {
-        this.gameController.updateView();
-    }
+    saveBtn.addEventListener("click", () => {
+        pauseBtn.click();
+        saveBtn.disabled = true;
+        saveFileContainer.classList.remove("d-none");
+    });
 
-    addUpdateListener(func) {
-        this.gameController.addUpdateListener(func);
-    }
+    saveFileBtn.addEventListener("click", () => {
+        const fileName = saveFileInput.value
 
-    removeUpdateListener(func) {
-        this.gameController.removeUpdateListener(func);
-    }
-
-    clear() {
-        this.gameController.clear();
-    }
-}
-
-const life = new Life("game", 100);
-
-const playBtn = document.getElementById("play");
-const pauseBtn = document.getElementById("pause");
-const resetBtn = document.getElementById("reset");
-const clearBtn = document.getElementById("clear");
-const saveBtn = document.getElementById("save");
-const loadBtn = document.getElementById("load");
-const saveFileContainer = document.getElementById("save-file-container");
-const saveFileInput = document.getElementById("save-file-name");
-const saveFileBtn = document.getElementById("save-file");
-const dlLink = document.getElementById("download-link");
-const ulInput = document.getElementById("upload-input");
-const errContainer = document.getElementById("error");
-
-function reset() {
-    const gameState = life.getGameState();
-    for (let rowIdx = 0; rowIdx < gameState.length; rowIdx++) {
-        const row = gameState[rowIdx];
-        for (let colIdx = 0; colIdx < row.length; colIdx++) {
-            row[colIdx] = Math.round(Math.random() * 100) % 10 === 0 ? 1 : 0;
-        }
-        console.debug(row);
-        gameState[rowIdx] = row;
-    }
-    life.setGameState(gameState);
-    life.updateView();
-}
-
-function disableSaveDialog() {
-    saveFileInput.value = "";
-    saveFileContainer.classList.add("d-none");
-    saveBtn.disabled = false;
-    errContainer.classList.add("hide");
-}
-
-playBtn.addEventListener("click", () => {
-    errContainer.classList.add("hide");
-    life.start();
-    playBtn.disabled = true;
-    pauseBtn.disabled = false;
-    disableSaveDialog();
-});
-
-pauseBtn.addEventListener("click", () => {
-    life.stop();
-    playBtn.disabled = false;
-    pauseBtn.disabled = true;
-});
-
-resetBtn.addEventListener("click", () => {
-    pauseBtn.click();
-    reset();
-});
-
-clearBtn.addEventListener("click", () => {
-    pauseBtn.click();
-    life.clear();
-    life.updateView();
-});
-
-saveBtn.addEventListener("click", () => {
-    pauseBtn.click();
-    saveBtn.disabled = true;
-    saveFileContainer.classList.remove("d-none");
-});
-
-saveFileBtn.addEventListener("click", () => {
-    const fileName = saveFileInput.value
-
-    if (fileName.length === 0 || !fileName.endsWith(".json")) {
-        errContainer.innerText = "Invalid file name, use a .json file";
-        errContainer.classList.remove("hide");
-        return;
-    }
-
-    const asJSON = JSON.stringify(life.getGameState());
-    dlLink.href = URL.createObjectURL(new Blob([asJSON], { type: "application/json" }));
-    dlLink.download = fileName;
-    dlLink.click();
-    dlLink.href = '#';
-    disableSaveDialog();
-});
-
-ulInput.addEventListener("change", (e) => {
-    errContainer.classList.add("hide");
-    const file = e.target.files[0] || null;
-    if (file === null) {
-        console.warn("no file selected");
-        return;
-    }
-    const fileReader = new FileReader();
-    fileReader.addEventListener("loadend", (e) => {
-        try {
-            const fromJSON = JSON.parse(e.target.result.toString());
-            life.setGameState(fromJSON);
-            life.updateView();
-        } catch (e) {
-            const err = `Invalid file: ${e.toString()}`;
-            errContainer.innerText = err;
+        if (fileName.length === 0 || !fileName.endsWith(".json")) {
+            errContainer.innerText = "Invalid file name, use a .json file";
             errContainer.classList.remove("hide");
-            console.error(err);
+            return;
         }
-        ulInput.value = "";
-    }, { once: true });
-    fileReader.readAsText(file);
-});
 
-loadBtn.addEventListener("click", () => {
-    pauseBtn.click();
-    ulInput.click();
-    disableSaveDialog();
-});
+        const asJSON = JSON.stringify(life.getGameState());
+        dlLink.href = URL.createObjectURL(new Blob([asJSON], { type: "application/json" }));
+        dlLink.download = fileName;
+        dlLink.click();
+        dlLink.href = '#';
+        disableSaveDialog();
+    });
 
-window.addEventListener("load", () => {
+    ulInput.addEventListener("change", (e) => {
+        errContainer.classList.add("hide");
+        const file = e.target.files[0] || null;
+        if (file === null) {
+            console.warn("no file selected");
+            return;
+        }
+        const fileReader = new FileReader();
+        fileReader.addEventListener("loadend", (e) => {
+            try {
+                const fromJSON = JSON.parse(e.target.result.toString());
+                life.setGameState(fromJSON);
+                life.updateView();
+            } catch (e) {
+                const err = `Invalid file: ${e.toString()}`;
+                errContainer.innerText = err;
+                errContainer.classList.remove("hide");
+                console.error(err);
+            }
+            ulInput.value = "";
+        }, { once: true });
+        fileReader.readAsText(file);
+    });
+
+    loadBtn.addEventListener("click", () => {
+        pauseBtn.click();
+        ulInput.click();
+        disableSaveDialog();
+    });
+
     reset();
     life.start();
-});
+}
+
+window.addEventListener("load", main);
