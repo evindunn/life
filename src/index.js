@@ -87,7 +87,7 @@ const saveFileInput = document.getElementById("save-file-name");
 const saveFileBtn = document.getElementById("save-file");
 const dlLink = document.getElementById("download-link");
 const ulInput = document.getElementById("upload-input");
-const ulErr = document.getElementById("upload-error");
+const errContainer = document.getElementById("error");
 
 function reset() {
     const gameState = life.getGameState();
@@ -107,11 +107,11 @@ function disableSaveDialog() {
     saveFileInput.value = "";
     saveFileContainer.classList.add("d-none");
     saveBtn.disabled = false;
-    ulErr.classList.add("d-none");
+    errContainer.classList.add("hide");
 }
 
 playBtn.addEventListener("click", () => {
-    ulErr.classList.add("d-none");
+    errContainer.classList.add("hide");
     life.start();
     playBtn.disabled = true;
     pauseBtn.disabled = false;
@@ -125,13 +125,11 @@ pauseBtn.addEventListener("click", () => {
 });
 
 resetBtn.addEventListener("click", () => {
-    ulErr.classList.add("d-none");
     pauseBtn.click();
     reset();
 });
 
 clearBtn.addEventListener("click", () => {
-    ulErr.classList.add("d-none");
     pauseBtn.click();
     life.clear();
     life.updateView();
@@ -147,8 +145,8 @@ saveFileBtn.addEventListener("click", () => {
     const fileName = saveFileInput.value
 
     if (fileName.length === 0 || !fileName.endsWith(".json")) {
-        ulErr.innerText = "Invalid file name, use a .json file";
-        ulErr.classList.remove("d-none");
+        errContainer.innerText = "Invalid file name, use a .json file";
+        errContainer.classList.remove("hide");
         return;
     }
 
@@ -161,7 +159,7 @@ saveFileBtn.addEventListener("click", () => {
 });
 
 ulInput.addEventListener("change", (e) => {
-    ulErr.classList.add("d-none");
+    errContainer.classList.add("hide");
     const file = e.target.files[0] || null;
     if (file === null) {
         console.warn("no file selected");
@@ -175,8 +173,8 @@ ulInput.addEventListener("change", (e) => {
             life.updateView();
         } catch (e) {
             const err = `Invalid file: ${e.toString()}`;
-            ulErr.innerText = err;
-            ulErr.classList.remove("d-none");
+            errContainer.innerText = err;
+            errContainer.classList.remove("hide");
             console.error(err);
         }
         ulInput.value = "";
@@ -187,6 +185,7 @@ ulInput.addEventListener("change", (e) => {
 loadBtn.addEventListener("click", () => {
     pauseBtn.click();
     ulInput.click();
+    disableSaveDialog();
 });
 
 window.addEventListener("load", () => {
