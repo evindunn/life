@@ -82,6 +82,9 @@ const resetBtn = document.getElementById("reset");
 const clearBtn = document.getElementById("clear");
 const saveBtn = document.getElementById("save");
 const loadBtn = document.getElementById("load");
+const saveFileContainer = document.getElementById("save-file-container");
+const saveFileInput = document.getElementById("save-file-name");
+const saveFileBtn = document.getElementById("save-file");
 const dlLink = document.getElementById("download-link");
 const ulInput = document.getElementById("upload-input");
 const ulErr = document.getElementById("upload-error");
@@ -100,11 +103,19 @@ function reset() {
     life.updateView();
 }
 
+function disableSaveDialog() {
+    saveFileInput.value = "";
+    saveFileContainer.classList.add("d-none");
+    saveBtn.disabled = false;
+    ulErr.classList.add("d-none");
+}
+
 playBtn.addEventListener("click", () => {
     ulErr.classList.add("d-none");
     life.start();
     playBtn.disabled = true;
     pauseBtn.disabled = false;
+    disableSaveDialog();
 });
 
 pauseBtn.addEventListener("click", () => {
@@ -128,10 +139,25 @@ clearBtn.addEventListener("click", () => {
 
 saveBtn.addEventListener("click", () => {
     pauseBtn.click();
+    saveBtn.disabled = true;
+    saveFileContainer.classList.remove("d-none");
+});
+
+saveFileBtn.addEventListener("click", () => {
+    const fileName = saveFileInput.value
+
+    if (fileName.length === 0 || !fileName.endsWith(".json")) {
+        ulErr.innerText = "Invalid file name, use a .json file";
+        ulErr.classList.remove("d-none");
+        return;
+    }
+
     const asJSON = JSON.stringify(life.getGameState());
     dlLink.href = URL.createObjectURL(new Blob([asJSON], { type: "application/json" }));
+    dlLink.download = fileName;
     dlLink.click();
     dlLink.href = '#';
+    disableSaveDialog();
 });
 
 ulInput.addEventListener("change", (e) => {
