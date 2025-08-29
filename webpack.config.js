@@ -9,7 +9,7 @@ module.exports = {
     entry: './src/index.js',
     mode: env,
     output: {
-        filename: 'bundle.js',
+        filename: 'bundle.[contenthash].js',
         path: path.resolve(__dirname, 'dist'),
     },
     plugins: [
@@ -17,7 +17,7 @@ module.exports = {
             template: 'src/index.ejs'
         }),
         new MiniCssExtractPlugin({
-            filename: "bundle.css",
+            filename: "bundle.[contenthash].css",
         })
     ],
     module: {
