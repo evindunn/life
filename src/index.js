@@ -10,6 +10,7 @@ export default class Life {
         const twoOpts = {
             fitted: true,
             autostart: false,
+            // type: Two.Types.webgl,
         };
         const two = new Two(twoOpts);
         two.appendTo(parentElem);

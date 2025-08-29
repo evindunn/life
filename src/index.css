@@ -110,6 +110,8 @@ div#game {
     height: 720px;
     padding: 0;
     margin: 3rem auto;
+    /* Prevent text cursor when click/dragging */
+    cursor: default;
 }
 
 div#upload-error {

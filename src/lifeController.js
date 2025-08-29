@@ -44,8 +44,29 @@ export class LifeController {
         this._render();
 
         this.gameLoop = null;
-        this.two.renderer.domElement.addEventListener('click', (e) => {
-            this.onCanvasClicked(e);
+        this.mouseIsDown = false;
+        this.clickedSpot = [0, 0];
+
+        const dragMouseListener = this.onDragMouse.bind(this);
+        this.two.renderer.domElement.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.clickedSpot = [e.offsetX, e.offsetY];
+            if (!this.mouseIsDown) {
+                this.two.renderer.domElement.addEventListener('mousemove', dragMouseListener);
+                this.mouseIsDown = true;
+            }
+        });
+        this.two.renderer.domElement.addEventListener('mouseup', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (e.offsetX === this.clickedSpot[0] && e.offsetY === this.clickedSpot[1]) {
+                this.onCanvasClicked(e);
+            }
+            if (this.mouseIsDown) {
+                this.two.renderer.domElement.removeEventListener('mousemove', dragMouseListener);
+                this.mouseIsDown = false;
+            }
         });
     }
 
@@ -82,6 +103,16 @@ export class LifeController {
     onCellClicked(rowIdx, colIdx) {
         this.model.toggleAt(rowIdx, colIdx);
         this.updateView();
+    }
+
+    onDragMouse(e) {
+        if (!this.isRunning) {
+            const row = Math.floor(e.offsetY / this.cellSize);
+            const col = Math.floor(e.offsetX / this.cellSize);
+            console.debug(`[${row}, ${col}]`);
+            this.model.matrix[row][col] = 1;
+            this.updateView();
+        }
     }
 
     updateView() {
