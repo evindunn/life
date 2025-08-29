@@ -7,6 +7,7 @@ html, body {
 
 body {
     min-height: 1200px;
+    overflow-x: hidden;
 }
 
 /*
@@ -121,6 +122,10 @@ div#upload-error {
  */
 
 @media only screen and (max-width: 1330px) {
+    body {
+        overflow-x: initial;
+    }
+
     .bottom-link, .control-button {
         margin-top: 0.5rem;
         margin-bottom: 0.5rem;
