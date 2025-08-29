@@ -37,5 +37,10 @@ module.exports = {
             `...`,
             new CssMinimizerPlugin(),
         ]
+    },
+    devServer: {
+        host: '127.0.0.1',
+        liveReload: true,
+        open: true,
     }
 };
