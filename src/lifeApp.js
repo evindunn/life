@@ -41,6 +41,14 @@ export class LifeApp {
         return this.gameController.generation;
     }
 
+    get numRows() {
+        return this.gameController.model.numRows;
+    }
+
+    get numCols() {
+        return this.gameController.model.numCols;
+    }
+
     getGameState() {
         return this.gameController.model.matrix
     }

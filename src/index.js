@@ -108,7 +108,35 @@ function main() {
             return;
         }
 
-        const asJSON = JSON.stringify(life.getGameState());
+        const savePoints = [];
+        let xMin = life.numCols + 1;
+        let xMax = 0;
+        let yMin = life.numRows + 1;
+        let yMax = 0;
+        for (let rowIdx = 0; rowIdx < life.numRows; rowIdx++) {
+            for (let colIdx = 0; colIdx < life.numCols; colIdx++) {
+                if (life.gameController.model.valueAt(rowIdx, colIdx) === 1) {
+                    savePoints.push([colIdx, rowIdx]);
+                    if (colIdx < xMin) {
+                        xMin = colIdx;
+                    }
+                    if (colIdx > xMax) {
+                        xMax = colIdx;
+                    }
+                    if (rowIdx < yMin) {
+                        yMin = rowIdx;
+                    }
+                    if (rowIdx > yMax) {
+                        yMax = rowIdx;
+                    }
+                }
+            }
+        }
+
+        const asJSON = JSON.stringify({
+            bounds: { xMin, xMax, yMin, yMax },
+            points: savePoints,
+        });
         dlLink.href = URL.createObjectURL(new Blob([asJSON], { type: "application/json" }));
         dlLink.download = fileName;
         dlLink.click();
@@ -127,7 +155,30 @@ function main() {
         fileReader.addEventListener("loadend", (e) => {
             try {
                 const fromJSON = JSON.parse(e.target.result.toString());
-                life.setGameState(fromJSON);
+
+                life.clear();
+
+                let xOffset = 0;
+                let yOffset = 0;
+                if (fromJSON.bounds.xMin < 0) {
+                    xOffset = fromJSON.bounds.xMin;
+                }
+                if (fromJSON.bounds.xMax > life.numCols) {
+                    xOffset = -fromJSON.bounds.xMax;
+                }
+                if (fromJSON.bounds.yMin < 0) {
+                    yOffset = fromJSON.bounds.yMin;
+                }
+                if (fromJSON.bounds.yMax > life.numRows) {
+                    yOffset = -fromJSON.bounds.yMax;
+                }
+
+                for (let [colIdx, rowIdx] of fromJSON.points) {
+                    colIdx += xOffset;
+                    rowIdx += yOffset;
+                    life.gameController.model.matrix[rowIdx][colIdx] = 1;
+                }
+
                 life.updateView();
             } catch (e) {
                 const err = `Invalid file: ${e.toString()}`;
