@@ -136,10 +136,6 @@ div#error.hide {
  */
 
 @media only screen and (max-width: 1330px) {
-    body {
-        overflow-x: initial;
-    }
-
     .bottom-link, .control-button {
         margin-top: 0.5rem;
         margin-bottom: 0.5rem;
@@ -162,6 +158,7 @@ div#error.hide {
     div#game {
         width: 100%;
         overflow-x: auto;
+        overflow-y: hidden;
         margin-left: 0;
         margin-right: 0;
     }
