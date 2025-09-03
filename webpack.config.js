@@ -2,6 +2,7 @@ const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
+const GOSPER_GLIDER_GUN = require('./src/public/gosper-glider-gun.json');
 
 const env = process.env["NODE_ENV"] || "production";
 
@@ -15,7 +16,7 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: 'src/index.ejs'
+            template: 'src/index.ejs',
         }),
         new MiniCssExtractPlugin({
             filename: "bundle.[contenthash].css",
@@ -30,6 +31,10 @@ module.exports = {
                     "css-loader"
                 ],
             },
+            {
+                test: /\.json$/,
+                type: 'asset/resource',
+            }
         ],
     },
     optimization: {

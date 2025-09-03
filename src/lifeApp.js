@@ -6,8 +6,10 @@ export class LifeApp {
     constructor(parentID, resolution) {
         const parentElem = document.getElementById(parentID);
         const twoOpts = {
-            fitted: true,
             autostart: false,
+            // fitted: true,
+            width: 1280,
+            height: 720,
             // type: Two.Types.webgl,
         };
         const two = new Two(twoOpts);

@@ -1,8 +1,12 @@
 import "./index.css";
 import { LifeApp } from "./lifeApp";
+import GOSPER_GLIDER_GUN from './public/gosper-glider-gun.json';
 
 const APP_CONTAINER_ID = "game";
 const APP_RESOLUTION_MAX = 100;
+const APP_COOL_PRESETS = {
+    'Gosper Glider Gun': GOSPER_GLIDER_GUN,
+};
 
 function main() {
     const life = new LifeApp(APP_CONTAINER_ID, APP_RESOLUTION_MAX);
@@ -19,6 +23,7 @@ function main() {
     const dlLink = document.getElementById("download-link");
     const ulInput = document.getElementById("upload-input");
     const errContainer = document.getElementById("error");
+    const coolPresets = document.getElementById("cool-presets");
 
     function reset() {
         const gameState = life.getGameState();
@@ -41,6 +46,13 @@ function main() {
         errContainer.classList.add("hide");
     }
 
+    for (const [k, v] of Object.entries(APP_COOL_PRESETS)) {
+        const opt = document.createElement("option");
+        opt.value = v;
+        opt.innerText = k;
+        coolPresets.appendChild(opt);
+    }
+
     playBtn.addEventListener("click", () => {
         errContainer.classList.add("hide");
         life.start();
@@ -53,6 +65,21 @@ function main() {
         life.stop();
         playBtn.disabled = false;
         pauseBtn.disabled = true;
+    });
+
+    coolPresets.addEventListener("change", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.target.value === '') {
+            return;
+        }
+        fetch(e.target.value).then(res => res.json()).catch((err) => {
+            console.log(err)
+        }).then((data) => {
+            pauseBtn.click();
+            life.setGameState(data);
+            life.updateView();
+        });
     });
 
     resetBtn.addEventListener("click", () => {

@@ -161,6 +161,7 @@ div#error.hide {
 
     div#game {
         width: 100%;
+        overflow-x: auto;
         margin-left: 0;
         margin-right: 0;
     }
