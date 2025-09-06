@@ -2,7 +2,6 @@ const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
-const GOSPER_GLIDER_GUN = require('./src/public/gosper-glider-gun.json');
 
 const env = process.env["NODE_ENV"] || "production";
 
@@ -45,6 +44,7 @@ module.exports = {
     },
     devServer: {
         host: '127.0.0.1',
+        port: 8080,
         liveReload: true,
         open: true,
     }
