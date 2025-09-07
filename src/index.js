@@ -55,6 +55,7 @@ function main() {
 
     playBtn.addEventListener("click", () => {
         errContainer.classList.add("hide");
+        coolPresets.value = '';
         life.start();
         playBtn.disabled = true;
         pauseBtn.disabled = false;
@@ -84,11 +85,14 @@ function main() {
 
     resetBtn.addEventListener("click", () => {
         pauseBtn.click();
+        coolPresets.value = '';
         reset();
     });
 
     clearBtn.addEventListener("click", () => {
         pauseBtn.click();
+        disableSaveDialog();
+        coolPresets.value = '';
         life.clear();
         life.updateView();
     });
@@ -192,6 +196,7 @@ function main() {
     });
 
     loadBtn.addEventListener("click", () => {
+        coolPresets.value = '';
         pauseBtn.click();
         ulInput.click();
         disableSaveDialog();
