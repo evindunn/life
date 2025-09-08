@@ -1,11 +1,13 @@
 import "./index.css";
 import { LifeApp } from "./lifeApp";
 import GOSPER_GLIDER_GUN from './public/gosper-glider-gun.json';
+import PULSAR from './public/pulsar.json';
 
 const APP_CONTAINER_ID = "game";
 const APP_RESOLUTION_MAX = 100;
 const APP_COOL_PRESETS = {
     'Gosper Glider Gun': GOSPER_GLIDER_GUN,
+    'Pulsar': PULSAR,
 };
 
 function main() {
@@ -46,9 +48,41 @@ function main() {
         errContainer.classList.add("hide");
     }
 
-    for (const [k, v] of Object.entries(APP_COOL_PRESETS)) {
+    function loadGameState(numRows, numCols, gameStateJson) {
+        const gameState = new Array(numRows);
+        const gameCol = new Array(numCols).fill(0);
+        for (let i = 0; i < numRows; i++) {
+            gameState[i] = [...gameCol];
+        }
+
+        let xOffset = 0;
+        let yOffset = 0;
+        if (gameStateJson.bounds.xMin < 0) {
+            xOffset = gameStateJson.bounds.xMin;
+        }
+        if (gameStateJson.bounds.xMax > numCols) {
+            xOffset = -gameStateJson.bounds.xMax;
+        }
+        if (gameStateJson.bounds.yMin < 0) {
+            yOffset = gameStateJson.bounds.yMin;
+        }
+        if (gameStateJson.bounds.yMax > numRows) {
+            yOffset = -gameStateJson.bounds.yMax;
+        }
+
+        for (let [colIdx, rowIdx] of gameStateJson.points) {
+            colIdx += xOffset;
+            rowIdx += yOffset;
+            gameState[rowIdx][colIdx] = 1;
+        }
+
+        return gameState;
+    }
+
+    const coolPresetKeys = Object.keys(APP_COOL_PRESETS).sort();
+    for (const k of coolPresetKeys) {
         const opt = document.createElement("option");
-        opt.value = v;
+        opt.value = APP_COOL_PRESETS[k];
         opt.innerText = k;
         coolPresets.appendChild(opt);
     }
@@ -68,6 +102,14 @@ function main() {
         pauseBtn.disabled = true;
     });
 
+    clearBtn.addEventListener("click", () => {
+        pauseBtn.click();
+        disableSaveDialog();
+        coolPresets.value = '';
+        life.clear();
+        life.updateView();
+    });
+
     coolPresets.addEventListener("change", (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -78,7 +120,13 @@ function main() {
             console.log(err)
         }).then((data) => {
             pauseBtn.click();
-            life.setGameState(data);
+            clearBtn.click();
+            const newGameState = loadGameState(
+                life.numRows,
+                life.numCols,
+                data,
+            );
+            life.setGameState(newGameState);
             life.updateView();
         });
     });
@@ -87,14 +135,6 @@ function main() {
         pauseBtn.click();
         coolPresets.value = '';
         reset();
-    });
-
-    clearBtn.addEventListener("click", () => {
-        pauseBtn.click();
-        disableSaveDialog();
-        coolPresets.value = '';
-        life.clear();
-        life.updateView();
     });
 
     saveBtn.addEventListener("click", () => {
@@ -161,29 +201,14 @@ function main() {
                 const fromJSON = JSON.parse(e.target.result.toString());
 
                 life.clear();
-
-                let xOffset = 0;
-                let yOffset = 0;
-                if (fromJSON.bounds.xMin < 0) {
-                    xOffset = fromJSON.bounds.xMin;
-                }
-                if (fromJSON.bounds.xMax > life.numCols) {
-                    xOffset = -fromJSON.bounds.xMax;
-                }
-                if (fromJSON.bounds.yMin < 0) {
-                    yOffset = fromJSON.bounds.yMin;
-                }
-                if (fromJSON.bounds.yMax > life.numRows) {
-                    yOffset = -fromJSON.bounds.yMax;
-                }
-
-                for (let [colIdx, rowIdx] of fromJSON.points) {
-                    colIdx += xOffset;
-                    rowIdx += yOffset;
-                    life.gameController.model.matrix[rowIdx][colIdx] = 1;
-                }
-
+                const newGameState = loadGameState(
+                    life.numRows,
+                    life.numCols,
+                    fromJSON,
+                );
+                life.setGameState(newGameState);
                 life.updateView();
+
             } catch (e) {
                 const err = `Invalid file: ${e.toString()}`;
                 errContainer.innerText = err;
