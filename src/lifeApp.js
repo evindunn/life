@@ -49,6 +49,10 @@ export class LifeApp {
         return this.gameController.model.numCols;
     }
 
+    get isRunning() {
+        return this.gameController.isRunning;
+    }
+
     getGameState() {
         return this.gameController.model.matrix
     }
@@ -79,5 +83,9 @@ export class LifeApp {
 
     clear() {
         this.gameController.clear();
+    }
+
+    undo() {
+        this.gameController.undo();
     }
 }

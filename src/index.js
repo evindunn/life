@@ -227,6 +227,14 @@ function main() {
         disableSaveDialog();
     });
 
+    window.addEventListener("keyup", (e) => {
+        if (!life.isRunning && e.code === "KeyZ") {
+            e.preventDefault();
+            e.stopPropagation();
+            life.undo();
+        }
+    });
+
     reset();
     life.start();
 }

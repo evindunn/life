@@ -1,12 +1,14 @@
 import Two from "two.js";
 
 const GRID_COLOR = '#888888';
+const APP_STACK_LENGTH = 25;
 
 export class LifeController {
     constructor(two, model, cellSize) {
         this.two = two;
         this.model = model;
         this.cellSize = cellSize;
+        this.stack = [];
 
         this.cells = new Two.Group();
         this.cells.corner();
@@ -78,6 +80,24 @@ export class LifeController {
         requestAnimationFrame(() => this.two.update());
     }
 
+    _stackPush(rowIdx, colIdx, value) {
+        this.stack.push([rowIdx, colIdx, value]);
+        if (this.stack.length > APP_STACK_LENGTH) {
+            const startIdx = this.stack.length - APP_STACK_LENGTH;
+            this.stack = this.stack.slice(startIdx);
+        }
+    }
+
+    undo() {
+        console.debug(this.stack);
+        if (this.stack.length > 0) {
+            const val = this.stack.pop();
+            this.model.matrix[val[0]][val[1]] = val[2] === 1 ? 0 : 1;
+        }
+        console.debug(this.stack);
+        this.updateView();
+    }
+
     makeCell(row, col) {
         const realSize = this.cellSize - 1;
         const cell = new Two.Rectangle(
@@ -102,6 +122,7 @@ export class LifeController {
 
     onCellClicked(rowIdx, colIdx) {
         this.model.toggleAt(rowIdx, colIdx);
+        this._stackPush(rowIdx, colIdx, this.model.valueAt(rowIdx, colIdx));
         this.updateView();
     }
 
@@ -111,6 +132,7 @@ export class LifeController {
             const col = Math.floor(e.offsetX / this.cellSize);
             console.debug(`[${row}, ${col}]`);
             this.model.matrix[row][col] = 1;
+            this._stackPush(row, col, 1);
             this.updateView();
         }
     }
@@ -159,6 +181,7 @@ export class LifeController {
     }
 
     clear() {
+        this.stack = [];
         for (let rowIdx = 0; rowIdx < this.model.numRows; rowIdx++) {
             for (let colIdx = 0; colIdx < this.model.numCols; colIdx++) {
                 this.model.matrix[rowIdx][colIdx] = 0;
