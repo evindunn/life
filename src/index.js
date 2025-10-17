@@ -1,4 +1,5 @@
 import "./index.css";
+import "./analytics";
 import { LifeApp } from "./lifeApp";
 import GOSPER_GLIDER_GUN from './public/gosper-glider-gun.json';
 import PULSAR from './public/pulsar.json';
