@@ -3,12 +3,14 @@ import "./analytics";
 import { LifeApp } from "./lifeApp";
 import GOSPER_GLIDER_GUN from './public/gosper-glider-gun.json';
 import PULSAR from './public/pulsar.json';
+import PENTADECATHLON from './public/pentadecathlon.json'
 
 const APP_CONTAINER_ID = "game";
 const APP_RESOLUTION_MAX = 100;
 const APP_COOL_PRESETS = {
     'Gosper Glider Gun': GOSPER_GLIDER_GUN,
     'Pulsar': PULSAR,
+    'Pentadecathlon': PENTADECATHLON,
 };
 
 function main() {
