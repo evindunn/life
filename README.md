@@ -1,5 +1,7 @@
 # Game of Life
 
+[![Build Status](https://github.com/evindunn/life/actions/workflows/publish.yml/badge.svg)](https://github.com/evindunn/life/actions/workflows/publish.yml)
+
 This is the source for my version of Conway's Game of Life running
 at [gol.evindunn.com](https://gol.evindunn.com).
 
