@@ -4,13 +4,13 @@ name: Build & Deploy on tag from main
 on:
   push:
     tags:
-      - '*'   # run on any tag push
+      - 'v0.**'   # run on any tag push
   workflow_dispatch: {}
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    if: github.ref_type == 'tag' && startsWith(github.ref, 'refs/tags/') && github.event.base_ref == 'refs/heads/main'
+    if: github.event_name == 'workflow_dispatch' || github.event.base_ref == 'refs/heads/main'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
