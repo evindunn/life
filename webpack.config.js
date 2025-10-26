@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
 const env = process.env["NODE_ENV"] || "production";
+const canonicalUrl = process.env["CANONICAL_URL"] || "https://gol.evindunn.com";
 
 module.exports = {
     entry: './src/index.js',
@@ -16,6 +17,9 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: 'src/index.ejs',
+            templateParameters: {
+                canonicalUrl,
+            },
         }),
         new MiniCssExtractPlugin({
             filename: "bundle.[contenthash].css",
